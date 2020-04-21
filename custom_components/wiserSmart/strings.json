@@ -1,0 +1,39 @@
+{
+    "config": {
+        "flow_title": "Wiser Smart Controller: {name}",
+        "title": "Wiser Smart Controller",
+        "step": {
+            "user": {
+                "title": "Wiser Smart Controller Setup",
+                "description": "Please enter the ip address, user and password to connect to the controller.",
+                "data": {
+                    "host": "IP Address",
+                    "user": "User",
+                    "password": "Password",
+                    "scan_interval": "Scan Interval"
+                }
+            }
+        },
+        "abort": {
+            "already_in_progress": "Wiser Smart Controller configuration is already in progress.",
+            "already_configured": "This device is already configured.",
+            "auth_failure": "Unable to authenticate with the Wiser Smart Controller.  Check the secret key and try again.",
+            "timeout_error": "Timed out trying to connect to the Wiser Smart Controller.  Check the IP address and try again.",
+            "not_successful": "Unable to connect to the Wiser Smart Controller.",
+            "not_wiser_device": "This device is currently not supported.",
+            "one_instance_only": "Only 1 instance of the Wiser Smart Controller is supported.  Check in ignored devices."
+        }
+    },
+    "options": {
+        "step": {
+            "user": {
+                "data": {
+                    "scan_interval": "Scan Interval"
+                },
+                "description": "Amend Wiser Smart parameters.",
+                "title": "Wiser Smart Controller Options"
+            }
+        }
+    }
+}
+

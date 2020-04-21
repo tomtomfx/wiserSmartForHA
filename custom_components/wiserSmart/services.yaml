@@ -1,0 +1,13 @@
+set_appliance_state:
+  description: "Sets the state of an appliance"
+  fields:
+    entity_id:
+      {
+        description: "Enter the entity_id for the appliance.",
+        example: "switch.appliance",
+      }
+    appliance_state:
+      {
+        description: "Enter the state, can be True or False.",
+        example: True,
+      }
