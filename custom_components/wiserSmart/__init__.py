@@ -207,8 +207,6 @@ class WiserSmartControllerHandle:
         self.wiserSmart = wiserSmart(ip, user, password)
         self.minimum_temp = TEMP_MINIMUM
         self.maximum_temp = TEMP_MAXIMUM
-            CONF_BOOST_TEMP_TIME, DEFAULT_BOOST_TEMP_TIME
-        )
         self.timer_handle = None
 
     @callback
