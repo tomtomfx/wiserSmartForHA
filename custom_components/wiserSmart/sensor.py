@@ -215,7 +215,7 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
 
         if modelId == "EH-ZB-SPD":
             return "WiserSmart " + self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("name")
-        else
+        else:
             # Multiple ones get automagically number _n by HA
             return (
                 "WiserSmart "

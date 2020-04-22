@@ -279,7 +279,7 @@ class WiserSmartControllerHandle:
         )
 
     async def set_home_mode(self, mode, comeBackTime):
-        hcMode = "manual" if mode == "manual" else hcMode = "schedule"
+        hcMode = "manual" if mode in ["manual"] else "schedule"
         if self.wiserSmart is None:
             self.wiserSmart = wiserSmart(self.ip, self.user, self.password)
         _LOGGER.debug(

@@ -32,9 +32,9 @@ DEVICE_STATUS_ICONS = {
 
 WISER_SMART_HOME_MODE_ICONS = {
     "manual": "mdi:gesture-tap",
-    "schedule": "mdi:calendar-clock"
-    "energysaver": "mdi:battery-plus"
-    "holiday": "mdi:palm-tree"
+    "schedule": "mdi:calendar-clock",
+    "energysaver": "mdi:battery-plus",
+    "holiday": "mdi:palm-tree",
 }
 
 WISER_SMART_SERVICES = {
