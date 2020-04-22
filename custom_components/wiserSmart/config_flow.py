@@ -1,7 +1,7 @@
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.const import CONF_HOST, CONF_NAME, CONF_PASSWORD, CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_HOST, CONF_NAME, CONF_USERNAME, CONF_PASSWORD, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistantError, callback
 from .const import (
     _LOGGER,
@@ -19,7 +19,7 @@ from wiserHeatingAPI.wiserHub import (
 
 data_schema = {
     vol.Required(CONF_HOST): str,
-    vol.Required(CONF_USER): str,
+    vol.Required(CONF_USERNAME): str,
     vol.Required(CONF_PASSWORD): str,
     vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): int,
 }
@@ -73,7 +73,7 @@ class WiserSmartFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 device = await self._test_connection(
-                    ip=user_input[CONF_HOST], user=user_input[CONF_USER], password=user_input[CONF_PASSWORD]
+                    ip=user_input[CONF_HOST], user=user_input[CONF_USERNAME], password=user_input[CONF_PASSWORD]
                 )
 
                 self._name = device
@@ -82,7 +82,7 @@ class WiserSmartFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     updates={
                         CONF_NAME: self._name,
                         CONF_HOST: user_input[CONF_HOST],
-                        CONF_USER: user_input[CONF_USER],
+                        CONF_USERNAME: user_input[CONF_USERNAME],
                         CONF_PASSWORD: user_input[CONF_PASSWORD],
                         CONF_SCAN_INTERVAL: user_input[CONF_SCAN_INTERVAL]
                         or DEFAULT_SCAN_INTERVAL,
@@ -133,7 +133,7 @@ class WiserSmartFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         self.discovery_schema = {
             vol.Required(CONF_HOST, default=self._host): str,
-            vol.Required(CONF_USER,): str,
+            vol.Required(CONF_USERNAME,): str,
             vol.Required(CONF_PASSWORD,): str,
             vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): int,
         }
@@ -152,7 +152,7 @@ class WiserSmartFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         try:
             user_input = {
                 CONF_HOST: import_data[0][CONF_HOST],
-                CONF_USER: import_data[0][CONF_USER],
+                CONF_USERNAME: import_data[0][CONF_USERNAME],
                 CONF_PASSWORD: import_data[0][CONF_PASSWORD],
                 CONF_SCAN_INTERVAL: import_data[0].get(
                     CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
@@ -166,7 +166,7 @@ class WiserSmartFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         try:
             device = await self._test_connection(
-                ip=user_input.get(CONF_HOST), user=user_input.get(CONF_USER), password=user_input.get(CONF_PASSWORD)
+                ip=user_input.get(CONF_HOST), user=user_input.get(CONF_USERNAME), password=user_input.get(CONF_PASSWORD)
             )
 
             self._name = device
@@ -176,7 +176,7 @@ class WiserSmartFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 updates={
                     CONF_NAME: self._name,
                     CONF_HOST: user_input[CONF_HOST],
-                    CONF_USER: user_input[CONF_USER],
+                    CONF_USERNAME: user_input[CONF_USERNAME],
                     CONF_PASSWORD: user_input[CONF_PASSWORD],
                     CONF_SCAN_INTERVAL: user_input[CONF_SCAN_INTERVAL]
                     or DEFAULT_SCAN_INTERVAL,

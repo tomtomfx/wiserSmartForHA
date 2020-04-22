@@ -24,7 +24,7 @@ from homeassistant.config_entries import SOURCE_IMPORT
 from homeassistant.const import (
     CONF_HOST,
     CONF_NAME,
-    CONF_USER,
+    CONF_USERNAME,
     CONF_PASSWORD,
     CONF_SCAN_INTERVAL,
 )
@@ -56,7 +56,7 @@ SCAN_INTERVAL = DEFAULT_SCAN_INTERVAL
 PLATFORM_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_HOST): cv.string,
-        vol.Required(CONF_USER): cv.string,
+        vol.Required(CONF_USERNAME): cv.string,
         vol.Required(CONF_PASSWORD): cv.string,
         vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.All(
             vol.Coerce(int)
@@ -112,7 +112,7 @@ async def async_setup_entry(hass, config_entry):
         hass,
         config_entry,
         config_entry.data[CONF_HOST],
-        config_entry.data[CONF_USER],
+        config_entry.data[CONF_USERNAME],
         config_entry.data[CONF_PASSWORD],
     )
 
