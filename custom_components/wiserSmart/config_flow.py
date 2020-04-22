@@ -9,7 +9,7 @@ from .const import (
     DOMAIN,
     DEFAULT_SCAN_INTERVAL,
 )
-from wiserHeatingAPI.wiserHub import (
+from wiserSmartAPI.wiserSmart import (
     wiserSmart,
     WiserControllerTimeoutException,
     WiserControllerAuthenticationException,
