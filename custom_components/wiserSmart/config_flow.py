@@ -107,7 +107,7 @@ class WiserSmartFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_zeroconf(self, discovery_info):
-        # Check that it is a Wiser Hub
+        # Check that it is a Wiser Smart Controller
         if not discovery_info.get("name") or not discovery_info["name"].startswith(
             "WISER"
         ):
