@@ -23,7 +23,7 @@ NOTIFICATION_ID = "wiser_smart_notification"
 NOTIFICATION_TITLE = "Wiser Smart Component Setup"
 
 # Default Values
-DEFAULT_SCAN_INTERVAL = 30
+DEFAULT_SCAN_INTERVAL = 300
 
 DEVICE_STATUS_ICONS = {
     "ONLINE": "mdi:remote",

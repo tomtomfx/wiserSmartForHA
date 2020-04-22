@@ -149,7 +149,7 @@ async def async_setup_entry(hass, config_entry):
             await scheduleWiserSmartSetup()
             return True
 
-    async def scheduleWiserSmartSetup(interval=30):
+    async def scheduleWiserSmartSetup(interval=300):
         _LOGGER.error(
             "Unable to connect to the Wiser Controller, retrying in {} seconds".format(
                 interval

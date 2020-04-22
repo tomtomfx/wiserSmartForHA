@@ -5,10 +5,10 @@
         "step": {
             "user": {
                 "title": "Wiser Smart Controller Setup",
-                "description": "Please enter the ip address, user and password to connect to the controller.",
+                "description": "Please enter the ip address, username and password to connect to the controller.",
                 "data": {
                     "host": "IP Address",
-                    "user": "User",
+                    "username": "Username",
                     "password": "Password",
                     "scan_interval": "Scan Interval"
                 }
