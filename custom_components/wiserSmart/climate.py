@@ -42,7 +42,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     data = hass.data[DOMAIN]
 
     wiser_rooms = [
-        WiserSmartRoom(hass, data, room) for room in data.wiserSmart.getWiserRooms()
+        WiserSmartRoom(hass, data, room) for room in data.wiserSmart.getWiserRoomsThermostat()
     ]
     async_add_entities(wiser_rooms, True)
 

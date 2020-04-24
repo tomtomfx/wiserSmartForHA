@@ -8,7 +8,7 @@
     "tomtomfx"
   ],
   "requirements": [
-    "wiser-smart-api>=1.0.5"
+    "wiser-smart-api>=6"
   ],
   "zeroconf": [
     "_http._tcp.local."
