@@ -45,7 +45,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
             # Add battery sensors
             # Add based on device type due to battery values sometimes not showing
-            # until sometime after a hub restart
+            # until sometime after a Controller restart
             if device.get("powerType") == "Battery":
                 wiserSmart_devices.append(
                     WiserSmartBatterySensor(data, device.get("name"), sensor_type="Battery")
@@ -141,14 +141,14 @@ class WiserSmartBatterySensor(WiserSmartSensor):
         """Return the state attributes of the battery."""
         attrs = {}
         attrs[ATTR_BATTERY_LEVEL] = (
-            self.data.wiserhub.getWiserDeviceInfo(self._deviceId).get("batteryLevel") or None
+            self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("batteryLevel") or None
         )
         return attrs
 
     def get_device_name(self):
         """Return the name of the Device"""
         deviceName = str(
-            self.data.wiserhub.getWiserDeviceInfo(self._deviceId).get("name") or ""
+            self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("name") or ""
         )
 
         # Multiple ones get automagically number _n by HA
@@ -156,7 +156,7 @@ class WiserSmartBatterySensor(WiserSmartSensor):
             "WiserSmart "
             + self._deviceId
             + "-"
-            + self.data.wiserhub.getWiserDeviceInfo(self._deviceId).get("location")
+            + self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("location")
             + " Battery Level"
         )
 
@@ -226,14 +226,14 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
 
     @property
     def icon(self):
-        """Return icon for signal strength"""
+        """Return icon for connection status"""
         try:
-            return SIGNAL_STRENGTH_ICONS[
+            return DEVICE_STATUS_ICONS[
                 self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("status")
             ]
         except KeyError:
             # Handle anything else as no signal
-            return SIGNAL_STRENGTH_ICONS["OFFLINE"]
+            return DEVICE_STATUS_ICONS["OFFLINE"]
 
     @property
     def device_state_attributes(self):
@@ -259,7 +259,7 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
         
         return attrs
 
-class WiserSystemCloudSensor(WiserSensor):
+class WiserSystemCloudSensor(WiserSmartSensor):
     """Sensor to display the status of the Wiser Cloud"""
 
     def __init__(self, data, device_id=0, sensor_type=""):
@@ -291,7 +291,7 @@ class WiserSystemCloudSensor(WiserSensor):
             return "mdi:cloud-alert"
 
 
-class WiserSystemOperationModeSensor(WiserSensor):
+class WiserSystemOperationModeSensor(WiserSmartSensor):
     """Sensor for the Wiser Smart Home Mode (manual, schedule, holiday, energysaver)"""
 
     def __init__(self, data, device_id=0, sensor_type=""):

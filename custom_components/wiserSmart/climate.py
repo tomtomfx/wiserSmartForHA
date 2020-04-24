@@ -16,8 +16,8 @@ from homeassistant.core import callback
 from homeassistant.components.climate.const import (
     SUPPORT_TARGET_TEMPERATURE,
     ATTR_CURRENT_TEMPERATURE,
-    CURRENT_HVAC_OFF,
-    CURRENT_HVAC_HEAT,
+    HVAC_MODE_HEAT,
+    HVAC_MODE_OFF,
 )
 from homeassistant.const import (
     TEMP_CELSIUS,
@@ -37,6 +37,16 @@ from .const import (
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE
 
+async def async_setup_entry(hass, config_entry, async_add_entities):
+    """Set up Wiser climate device"""
+    data = hass.data[DOMAIN]
+
+    wiser_rooms = [
+        WiserSmartRoom(hass, data, room) for room in data.wiserSmart.getWiserRooms()
+    ]
+    async_add_entities(wiser_rooms, True)
+
+
 """ Definition of WiserSmartRoom """
 class WiserSmartRoom(ClimateDevice):
     def __init__(self, hass, data, room_id):
@@ -47,6 +57,7 @@ class WiserSmartRoom(ClimateDevice):
         self.target_temp = None
         self.room_id = room_id
         self._force_update = False
+        self._hvac_modes_list = [HVAC_MODE_HEAT, HVAC_MODE_OFF]
         _LOGGER.info(
             "WiserSmart Room: Initialisation for {}".format(self.room_id)
         )
@@ -76,9 +87,9 @@ class WiserSmartRoom(ClimateDevice):
         self.target_temp = room.get("targetValue")
 
         if self.current_temp < self.target_temp:
-            state = CURRENT_HVAC_HEAT
+            state = HVAC_MODE_HEAT
         else:
-            state = CURRENT_HVAC_OFF
+            state = HVAC_MODE_OFF
         return state
 
     @property
@@ -131,6 +142,11 @@ class WiserSmartRoom(ClimateDevice):
     def hvac_mode(self):
         state = self.state()
         return state
+
+    @property
+    def hvac_modes(self):
+        """Return the list of available operation modes."""
+        return self._hvac_modes_list
 
     @property
     def target_temperature(self):
