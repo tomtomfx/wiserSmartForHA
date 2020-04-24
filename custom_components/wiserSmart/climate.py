@@ -67,7 +67,7 @@ class WiserSmartRoom(ClimateDevice):
         if self._force_update:
             await self.data.async_update(no_throttle=True)
             self._force_update = False
-        room = self.data.WiserSmart.getWiserRoomInfo(self.room_id)
+        room = self.data.wiserSmart.getWiserRoomInfo(self.room_id)
         self.current_temp = room.get("currentValue")
         self.target_temp = room.get("targetValue")
 
@@ -82,7 +82,7 @@ class WiserSmartRoom(ClimateDevice):
 
     @property
     def state(self):
-        room = self.data.WiserSmart.getWiserRoomInfo(self.room_id)
+        room = self.data.wiserSmart.getWiserRoomInfo(self.room_id)
         self.current_temp = room.get("currentValue")
         self.target_temp = room.get("targetValue")
 
@@ -94,7 +94,7 @@ class WiserSmartRoom(ClimateDevice):
 
     @property
     def name(self):
-        return "WiserSmart " + self.room_id
+        return "WiserSmart - Thermostat - " + self.room_id
 
     @property
     def temperature_unit(self):
@@ -110,13 +110,13 @@ class WiserSmartRoom(ClimateDevice):
 
     @property
     def current_temperature(self):
-        temp = self.data.WiserSmart.getWiserRoomInfo(self.room_id).get("currentValue")
+        temp = self.data.wiserSmart.getWiserRoomInfo(self.room_id).get("currentValue")
         return temp
 
     @property
     def icon(self):
         # Change icon to show if radiator is heating, not heating or set to off.
-        room = self.data.WiserSmart.getWiserRoomInfo(self.room_id)
+        room = self.data.wiserSmart.getWiserRoomInfo(self.room_id)
         self.current_temp = room.get("currentValue")
         self.target_temp = room.get("targetValue")
 
@@ -136,6 +136,7 @@ class WiserSmartRoom(ClimateDevice):
             "name": self.name,
             "identifiers": {(DOMAIN, self.unique_id)},
             "manufacturer": MANUFACTURER,
+            "model": "EH-ZB-RTS",
         }
 
     @property
@@ -150,7 +151,7 @@ class WiserSmartRoom(ClimateDevice):
 
     @property
     def target_temperature(self):
-        return self.data.WiserSmart.getWiserRoomInfo(self.room_id).get("targetValue")        
+        return self.data.wiserSmart.getWiserRoomInfo(self.room_id).get("targetValue")        
 
     async def async_set_temperature(self, **kwargs):
         """Set new target temperatures."""

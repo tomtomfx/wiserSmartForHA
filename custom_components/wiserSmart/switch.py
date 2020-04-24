@@ -84,7 +84,7 @@ class WiserSmartAppliance(SwitchDevice):
         identifier = None
         model = None
 
-        identifier = self.unique_id
+        identifier = "Plug-{}".format(self._uniqueId)
         model = self.data.wiserSmart.getWiserDeviceInfo(self.appliance_id).get("modelId")
 
         return {

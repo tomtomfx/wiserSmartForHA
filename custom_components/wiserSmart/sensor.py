@@ -164,7 +164,13 @@ class WiserSmartBatterySensor(WiserSmartSensor):
     def device_info(self):
         """Return device specific attributes."""
         deviceName = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("name")
-        return {"identifiers": {(DOMAIN, "{}-{}".format(deviceName, self._deviceId))}}
+        model = self.data.wiserSmart.getWiserDeviceInfo(self.appliance_id).get("modelId")
+        return {
+            "name": deviceName,
+            "identifiers": {(DOMAIN, "{}-{}".format(deviceName, self._deviceId))}
+            "manufacturer": MANUFACTURER,
+            "model": model,
+        }
 
 
 class WiserSmartDeviceSensor(WiserSmartSensor):
@@ -190,6 +196,9 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
         """Return device specific attributes."""
         identifier = None
 
+        deviceName = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("name")
+        model = self.data.wiserSmart.getWiserDeviceInfo(self.appliance_id).get("modelId")
+
         # Thermostat
         if (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-RTS"):
             identifier = "Thermostat-{}".format(self._device_name)
@@ -204,7 +213,12 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
             identifier = "WaterHeater-{}".format(self._device_name)
 
         if (identifier != None):
-            return {"identifiers": {(DOMAIN, identifier)}}
+            return {
+                "name": deviceName,
+                "identifiers": {(DOMAIN, identifier)}
+                "manufacturer": MANUFACTURER,
+                "model": model,
+            }
         return None
 
     def get_device_name(self):
