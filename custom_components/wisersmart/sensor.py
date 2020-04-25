@@ -126,6 +126,7 @@ class WiserSmartBatterySensor(WiserSmartSensor):
 
         # Set battery info
         self._battery_level = device.get("batteryLevel")
+        self._state = device.get("batteryLevel") * 10
 
     @property
     def device_class(self):
@@ -141,6 +142,7 @@ class WiserSmartBatterySensor(WiserSmartSensor):
     def device_state_attributes(self):
         """Return the state attributes of the battery."""
         attrs = {}
+
         attrs[ATTR_BATTERY_LEVEL] = (
             self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("batteryLevel") or None
         )
@@ -148,27 +150,20 @@ class WiserSmartBatterySensor(WiserSmartSensor):
 
     def get_device_name(self):
         """Return the name of the Device"""
-        deviceName = str(
-            self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("name") or ""
-        )
-
         # Multiple ones get automagically number _n by HA
         return (
-            "WiserSmart "
+            "WiserSmart - "
             + self._deviceId
-            + "-"
-            + self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("location")
-            + " Battery Level"
+            + " - Battery Level"
         )
 
     @property
     def device_info(self):
         """Return device specific attributes."""
-        deviceName = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("name")
         model = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId")
         return {
-            "name": deviceName,
-            "identifiers": {(DOMAIN, "{}-{}".format(deviceName, self._deviceId))},
+            "name": self.get_device_name,
+            "identifiers": {(DOMAIN, "WiserSmart - {}".format(self._deviceId)},
             "manufacturer": MANUFACTURER,
             "model": model,
         }
@@ -181,8 +176,8 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
         super().__init__(data, device_id, sensor_type)
         self._device_name = self.get_device_name()
         self._battery_level = None
-        self.__powerConsump = None
         self._battery_percent = 0
+        self._power_consump = None
         _LOGGER.info("{} device init".format(self._device_name))
 
     async def async_update(self):
@@ -202,20 +197,20 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
 
         # Thermostat
         if (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-RTS"):
-            identifier = "Thermostat-{}".format(self._device_name)
+            identifier = "WiserSmart - {}".format(self._deviceId)
         # Appliance
         elif (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-SPD"):
-            identifier = "Plug-{}".format(self._device_name)
+            identifier = "WiserSmart - {}".format(self._deviceId)
         # Heater
         elif (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-HACT"):
-            identifier = "Heater-{}".format(self._device_name)
+            identifier = "WiserSmart - {}".format(self._deviceId)
         # Water Heater
         elif (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-LMACT"):
-            identifier = "WaterHeater-{}".format(self._device_name)
+            identifier = "WiserSmart - {}".format(self._deviceId)
 
         if (identifier != None):
             return {
-                "name": deviceName,
+                "name": self.get_device_name,
                 "identifiers": {(DOMAIN, identifier)},
                 "manufacturer": MANUFACTURER,
                 "model": model,
@@ -224,20 +219,11 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
 
     def get_device_name(self):
         """Return the name of the Device"""
-        modelId = str(
-            self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") or ""
+        # Multiple ones get automagically number _n by HA
+        return (
+            "WiserSmart - "
+            + self._deviceId
         )
-
-        if modelId == "EH-ZB-SPD":
-            return "WiserSmart " + self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("name")
-        else:
-            # Multiple ones get automagically number _n by HA
-            return (
-                "WiserSmart "
-                + self._deviceId
-                + "-"
-                + self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("location")
-            )
 
     @property
     def icon(self):
@@ -262,15 +248,12 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
         attrs["vendor"] = "Schneider Electric"
         attrs["model_identifier"] = device_data.get("modelId")
 
-        if self._sensor_type in ["Battery"] and device_data.get("BatteryLevel"):
-            self._battery_level = device_data.get("BatteryLevel")
-            self._battery_percent = 10 * self._battery_level
-
-            attrs["battery_percent"] = self._battery_percent
+        if self._sensor_type in ["EH-ZB-RTS"]:
+            attrs["battery_percent"] = device_data.get("BatteryLevel") * 10
             attrs["battery_level"] = device_data.get("BatteryLevel")
             
         elif self._sensor_type in ["EH-ZB-SPD", "EH-ZB-LMACT"]:
-            self._powerConsump = device_data.get("powerConsump")
+            attrs["power_consumption"] = device_data.get("powerConsump")
         
         return attrs
 

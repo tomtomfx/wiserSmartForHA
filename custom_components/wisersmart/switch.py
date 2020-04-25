@@ -34,7 +34,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     # Add appliances (if any)
     if data.wiserSmart.getWiserAppliances() is not None:
         wiserSmart_appliances = [
-            WiserSmartAppliance(data, appliance.get("applianceName"), "WiserSmart {}".format(appliance.get("applianceName")))
+            WiserSmartAppliance(data, appliance.get("applianceName"), "WiserSmart - Plug - {}".format(appliance.get("applianceName")))
             for appliance in data.wiserSmart.getWiserAppliances()
         ]
         async_add_entities(wiserSmart_appliances)
@@ -72,7 +72,7 @@ class WiserSmartAppliance(SwitchDevice):
 
     @property
     def unique_id(self):
-        return "{}-{}".format(self.appliance_name, self.appliance_id)
+        return "WiserSmart - {}".format(self.appliance_id)
 
     @property
     def icon(self):
@@ -81,15 +81,11 @@ class WiserSmartAppliance(SwitchDevice):
     @property
     def device_info(self):
         """Return device specific attributes."""
-        identifier = None
-        model = None
-
-        identifier = "Plug-{}".format(self.unique_id)
         model = self.data.wiserSmart.getWiserDeviceInfo(self.appliance_id).get("modelId")
 
         return {
             "name": self.appliance_name,
-            "identifiers": {(DOMAIN, identifier)},
+            "identifiers": {(DOMAIN, self.unique_id)},
             "manufacturer": MANUFACTURER,
             "model": model,
         }
@@ -117,8 +113,7 @@ class WiserSmartAppliance(SwitchDevice):
     def device_state_attributes(self):
         attrs = {}
         device_data = self.data.wiserSmart.getWiserApplianceInfo(self.appliance_id)
-        attrs["State"] = device_data.get("state")
-        attrs["PowerConsumption"] = device_data.get("powerConsump")
+        attrs["power_consumption"] = device_data.get("powerConsump")
         return attrs
 
     async def async_turn_on(self, **kwargs):
