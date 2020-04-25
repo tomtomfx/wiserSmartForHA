@@ -163,7 +163,7 @@ class WiserSmartBatterySensor(WiserSmartSensor):
         model = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId")
         return {
             "name": self.get_device_name,
-            "identifiers": {(DOMAIN, "WiserSmart - {}".format(self._deviceId)},
+            "identifiers": {(DOMAIN, "WiserSmart - {}".format(self._deviceId))},
             "manufacturer": MANUFACTURER,
             "model": model,
         }
