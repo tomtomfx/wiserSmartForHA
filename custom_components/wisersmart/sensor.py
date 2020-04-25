@@ -25,6 +25,7 @@ from homeassistant.helpers.icon import icon_for_battery_level
 from .const import (
     _LOGGER,
     DOMAIN,
+    MANUFACTURER,
     DEVICE_STATUS_ICONS,
     WISER_SMART_HOME_MODE_ICONS,
     THERMOSTAT_MIN_BATTERY_LEVEL,
@@ -164,10 +165,10 @@ class WiserSmartBatterySensor(WiserSmartSensor):
     def device_info(self):
         """Return device specific attributes."""
         deviceName = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("name")
-        model = self.data.wiserSmart.getWiserDeviceInfo(self.appliance_id).get("modelId")
+        model = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId")
         return {
             "name": deviceName,
-            "identifiers": {(DOMAIN, "{}-{}".format(deviceName, self._deviceId))}
+            "identifiers": {(DOMAIN, "{}-{}".format(deviceName, self._deviceId))},
             "manufacturer": MANUFACTURER,
             "model": model,
         }
@@ -197,7 +198,7 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
         identifier = None
 
         deviceName = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("name")
-        model = self.data.wiserSmart.getWiserDeviceInfo(self.appliance_id).get("modelId")
+        model = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId")
 
         # Thermostat
         if (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-RTS"):
@@ -215,7 +216,7 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
         if (identifier != None):
             return {
                 "name": deviceName,
-                "identifiers": {(DOMAIN, identifier)}
+                "identifiers": {(DOMAIN, identifier)},
                 "manufacturer": MANUFACTURER,
                 "model": model,
             }

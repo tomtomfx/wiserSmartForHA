@@ -76,7 +76,7 @@ class WiserSmartAppliance(SwitchDevice):
 
     @property
     def icon(self):
-        return "mdi:power-socket-uk"
+        return "mdi:power-socket-fr"
 
     @property
     def device_info(self):
@@ -84,7 +84,7 @@ class WiserSmartAppliance(SwitchDevice):
         identifier = None
         model = None
 
-        identifier = "Plug-{}".format(self._uniqueId)
+        identifier = "Plug-{}".format(self.unique_id)
         model = self.data.wiserSmart.getWiserDeviceInfo(self.appliance_id).get("modelId")
 
         return {

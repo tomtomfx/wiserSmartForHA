@@ -1,5 +1,5 @@
 {
-  "domain": "wiserSmart",
+  "domain": "wisersmart",
   "name": "Wiser Smart Component for Home Assistant",
   "config_flow": true,
   "documentation": "https://github.com/tomtomfx/wiserSmartForHA/blob/master/Readme.Md",

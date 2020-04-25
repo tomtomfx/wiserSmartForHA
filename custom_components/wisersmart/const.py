@@ -2,7 +2,7 @@ import logging
 
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = "wiserSmart"
+DOMAIN = "wisersmart"
 DATA_WISER_SMART_CONFIG = "wiserSmart_config"
 VERSION = "1.0.0"
 WISER_SMART_PLATFORMS = ["climate", "sensor", "switch"]
