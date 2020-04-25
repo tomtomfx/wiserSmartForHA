@@ -249,8 +249,8 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
         attrs["model_identifier"] = device_data.get("modelId")
 
         if self._sensor_type in ["EH-ZB-RTS"]:
-            attrs["battery_percent"] = device_data.get("BatteryLevel") * 10
-            attrs["battery_level"] = device_data.get("BatteryLevel")
+            attrs["battery_percent"] = device_data.get("batteryLevel") * 10
+            attrs["battery_level"] = device_data.get("batteryLevel")
             
         elif self._sensor_type in ["EH-ZB-SPD", "EH-ZB-LMACT"]:
             attrs["power_consumption"] = device_data.get("powerConsump")
