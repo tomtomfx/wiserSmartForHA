@@ -20,6 +20,7 @@ from homeassistant.components.climate.const import (
     HVAC_MODE_OFF,
 )
 from homeassistant.const import (
+    ATTR_TEMPERATURE,
     TEMP_CELSIUS,
 )
 import homeassistant.helpers.config_validation as cv
@@ -127,7 +128,7 @@ class WiserSmartRoom(ClimateDevice):
         
     @property
     def unique_id(self):
-        return "WiserSmartRoom-{}".format(self.room_id)
+        return "WiserSmartRoom - {}".format(self.room_id)
 
     @property
     def device_info(self):
@@ -155,8 +156,11 @@ class WiserSmartRoom(ClimateDevice):
 
     async def async_set_temperature(self, **kwargs):
         """Set new target temperatures."""
-        target_temperature = kwargs.get(ATTR_CURRENT_TEMPERATURE)
+        target_temperature = kwargs.get(ATTR_TEMPERATURE)
         if target_temperature is None:
+            _LOGGER.debug(
+                "No target temperature set for {}".format(self.name)
+            )
             return False
 
         _LOGGER.debug(

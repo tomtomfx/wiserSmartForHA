@@ -200,12 +200,14 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
         # Thermostat
         if (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-RTS"):
             model = "Thermostat"
+            identifier = "WiserSmartRoom - {}".format(self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("location"))
         # Appliance
         elif (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-SPD"):
             model = "Plug"
         # Heater
         elif (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-HACT"):
             model = "Heater"
+            identifier = "WiserSmartRoom - {}".format(self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("location"))
         # Water Heater
         elif (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-LMACT"):
             model = "Water heater"
