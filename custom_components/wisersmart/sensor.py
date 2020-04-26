@@ -161,12 +161,13 @@ class WiserSmartBatterySensor(WiserSmartSensor):
     def device_info(self):
         """Return device specific attributes."""
         model = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId")
+        identifier = "WiserSmart - {}".format(self._deviceId)
+        if model == "EH-ZB-RTS":
+            identifier = "WiserSmartRoom - {}".format(self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("location"))
+            model = "Thermostat"
         name = self.get_device_name()
         return {
-            "name": name,
             "identifiers": {(DOMAIN, "WiserSmart - {}".format(self._deviceId))},
-            "manufacturer": MANUFACTURER,
-            "model": model,
         }
 
 
@@ -214,10 +215,7 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
 
         if (identifier != None):
             return {
-                "name": name,
                 "identifiers": {(DOMAIN, identifier)},
-                "manufacturer": MANUFACTURER,
-                "model": model,
             }
         return None
 
