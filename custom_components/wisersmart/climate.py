@@ -137,7 +137,7 @@ class WiserSmartRoom(ClimateDevice):
             "name": self.name,
             "identifiers": {(DOMAIN, self.unique_id)},
             "manufacturer": MANUFACTURER,
-            "model": "EH-ZB-RTS",
+            "model": "Wiser Smart Room",
         }
 
     @property

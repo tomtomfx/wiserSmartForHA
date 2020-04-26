@@ -303,7 +303,7 @@ class WiserSmartControllerHandle:
         _LOGGER.info("Setting appliance {} to {} ".format(applianceName, state))
 
         try:
-            self.wiserSmart.setWiserApplianceState(self, applianceName, state)
+            self.wiserSmart.setWiserApplianceState(applianceName, state)
             # Add small delay to allow hub to update status before refreshing
             await asyncio.sleep(0.5)
             await self.async_update(no_throttle=True)

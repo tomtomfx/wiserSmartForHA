@@ -164,10 +164,12 @@ class WiserSmartBatterySensor(WiserSmartSensor):
         identifier = "WiserSmart - {}".format(self._deviceId)
         if model == "EH-ZB-RTS":
             identifier = "WiserSmartRoom - {}".format(self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("location"))
-            model = "Thermostat"
-        name = self.get_device_name()
+            model = "Wiser Smart Room"
+
         return {
-            "identifiers": {(DOMAIN, "WiserSmart - {}".format(self._deviceId))},
+            "identifiers": {(DOMAIN, identifier)},
+            "manufacturer": MANUFACTURER,
+            "model": model,
         }
 
 
@@ -192,30 +194,19 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
     @property
     def device_info(self):
         """Return device specific attributes."""
-        identifier = None
-
         model = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId")
-        name = self.get_device_name()
         identifier = "WiserSmart - {}".format(self._deviceId)
 
-        # Thermostat
-        if (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-RTS"):
-            model = "Thermostat"
+        # Thermostats and heaters
+        if (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") in ["EH-ZB-RTS", "EH-ZB-HACT"]):
             identifier = "WiserSmartRoom - {}".format(self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("location"))
-        # Appliance
-        elif (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-SPD"):
-            model = "Plug"
-        # Heater
-        elif (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-HACT"):
-            model = "Heater"
-            identifier = "WiserSmartRoom - {}".format(self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("location"))
-        # Water Heater
-        elif (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-LMACT"):
-            model = "Water heater"
+            model = "Wiser Smart Room"
 
         if (identifier != None):
             return {
                 "identifiers": {(DOMAIN, identifier)},
+                "manufacturer": MANUFACTURER,
+                "model": model,
             }
         return None
 
