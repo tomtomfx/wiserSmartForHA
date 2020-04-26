@@ -161,8 +161,9 @@ class WiserSmartBatterySensor(WiserSmartSensor):
     def device_info(self):
         """Return device specific attributes."""
         model = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId")
+        name = self.get_device_name()
         return {
-            "name": self.get_device_name,
+            "name": name,
             "identifiers": {(DOMAIN, "WiserSmart - {}".format(self._deviceId))},
             "manufacturer": MANUFACTURER,
             "model": model,
@@ -192,25 +193,26 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
         """Return device specific attributes."""
         identifier = None
 
-        deviceName = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("name")
         model = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId")
+        name = self.get_device_name()
+        identifier = "WiserSmart - {}".format(self._deviceId)
 
         # Thermostat
         if (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-RTS"):
-            identifier = "WiserSmart - {}".format(self._deviceId)
+            model = "Thermostat"
         # Appliance
         elif (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-SPD"):
-            identifier = "WiserSmart - {}".format(self._deviceId)
+            model = "Plug"
         # Heater
         elif (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-HACT"):
-            identifier = "WiserSmart - {}".format(self._deviceId)
+            model = "Heater"
         # Water Heater
         elif (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") == "EH-ZB-LMACT"):
-            identifier = "WiserSmart - {}".format(self._deviceId)
+            model = "Water heater"
 
         if (identifier != None):
             return {
-                "name": self.get_device_name,
+                "name": name,
                 "identifiers": {(DOMAIN, identifier)},
                 "manufacturer": MANUFACTURER,
                 "model": model,
