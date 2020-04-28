@@ -38,7 +38,7 @@ It contains:
 
 ## Display example
 
-![](https://github.com/tomtomfx/wiserSmartForHA/master/docs/ha_display.png)
+![](https://github.com/tomtomfx/wiserSmartForHA/blob/master/docs/ha_display.png)
 
 ## To do
 
@@ -55,7 +55,7 @@ It is highly recommended to use HACS to install the integration. Please see HACS
 - Add the Github repository to HACS as an integration 
 - In the integration page look for Wiser Smart Component for Home Assissant
 
-![](https://github.com/tomtomfx/wiserSmartForHA/master/docs/ha_hacs_wiser.png)
+![](https://github.com/tomtomfx/wiserSmartForHA/blob/master/docs/ha_hacs_wiser.png)
 
 - Install it
 - You will be asked to restart HA
@@ -67,7 +67,7 @@ This component is using the config flow to avoid having to populate the configur
 - Go to integration and click on "+"
 - Search "Wiser Smart"
 
-![](https://github.com/tomtomfx/wiserSmartForHA/master/docs/ha_integration.png)
+![](https://github.com/tomtomfx/wiserSmartForHA/blob/master/docs/ha_integration.png)
 
 - You will be asked for 4 parameters
 
