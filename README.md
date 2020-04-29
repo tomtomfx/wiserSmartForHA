@@ -2,6 +2,8 @@
 
 Home assistant component for the Wiser Smart Controller (White cross)
 
+![](https://github.com/tomtomfx/wiserSmartForHA/blob/master/docs/visuel-wiser.jpg)
+
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
 
 Please use HACS for installation.

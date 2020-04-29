@@ -115,7 +115,6 @@ class WiserSmartBatterySensor(WiserSmartSensor):
         # Set default state to unknown to show this value if battery info
         # cannot be read.
         self._state = "Unknown"
-        self._battery_level = None
         _LOGGER.info("{} device init".format(self._device_name))
 
     async def async_update(self):
@@ -125,7 +124,6 @@ class WiserSmartBatterySensor(WiserSmartSensor):
         device = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId)
 
         # Set battery info
-        self._battery_level = device.get("batteryLevel")
         self._state = device.get("batteryLevel") * 10
 
     @property
@@ -144,7 +142,7 @@ class WiserSmartBatterySensor(WiserSmartSensor):
         attrs = {}
 
         attrs[ATTR_BATTERY_LEVEL] = (
-            self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("batteryLevel") or None
+            self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("batteryLevel") * 10 or None
         )
         return attrs
 
@@ -242,8 +240,7 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
         attrs["model_identifier"] = device_data.get("modelId")
 
         if self._sensor_type in ["EH-ZB-RTS"]:
-            attrs["battery_percent"] = device_data.get("batteryLevel") * 10
-            attrs["battery_level"] = device_data.get("batteryLevel")
+            attrs["battery_level"] = device_data.get("batteryLevel") * 10
             
         elif self._sensor_type in ["EH-ZB-SPD", "EH-ZB-LMACT"]:
             appliance = self.data.wiserSmart.getWiserApplianceInfo(self._deviceId)
