@@ -16,6 +16,7 @@ from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
     CONF_ENTITY_NAMESPACE,
     DEVICE_CLASS_BATTERY,
+    DEVICE_CLASS_POWER,
     STATE_UNKNOWN,
 )
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
@@ -45,13 +46,17 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             )
 
             # Add battery sensors
-            # Add based on device type due to battery values sometimes not showing
-            # until sometime after a Controller restart
             if device.get("powerType") == "Battery":
                 wiserSmart_devices.append(
                     WiserSmartBatterySensor(data, device.get("name"), sensor_type="Battery")
                 )
-
+            
+            # Add power sensors
+            if device.get("modelId") == "EH-ZB-SPD":
+                wiserSmart_devices.append(
+                    WiserSmartPowerSensor(data, device.get("name"), sensor_type="Power")
+                )
+            
     # Add cloud status sensor
     wiserSmart_devices.append(WiserSystemCloudSensor(data, sensor_type="Cloud Sensor"))
 
@@ -170,6 +175,62 @@ class WiserSmartBatterySensor(WiserSmartSensor):
             "model": model,
         }
 
+class WiserSmartPowerSensor(WiserSmartSensor):
+    """Definition of a power sensor for Wiser Smart"""
+
+    def __init__(self, data, device_id=0, sensor_type=""):
+        super().__init__(data, device_id, sensor_type)
+        self._device_name = self.get_device_name()
+        # Set default state to unknown to show this value if battery info
+        # cannot be read.
+        self._state = "Unknown"
+        _LOGGER.info("{} device init".format(self._device_name))
+
+    async def async_update(self):
+        """Fetch new state data for the sensor."""
+        await super().async_update()
+        appliance = self.data.wiserSmart.getWiserApplianceInfo(self._deviceId)
+        # Set power info
+        self._state = appliance.get("powerConsump")
+
+    @property
+    def device_class(self):
+        """Return the class of the sensor."""
+        return DEVICE_CLASS_POWER
+
+    @property
+    def unit_of_measurement(self):
+        """Return the unit of measurement of this entity."""
+        return "W"
+
+    @property
+    def device_state_attributes(self):
+        """Return the state attributes of the battery."""
+        attrs = {}
+        attrs["power"] = (
+            self.data.wiserSmart.getWiserApplianceInfo(self._deviceId).get("powerConsump") or None
+        )
+        return attrs
+
+    def get_device_name(self):
+        """Return the name of the Device"""
+        # Multiple ones get automagically number _n by HA
+        return (
+            "WiserSmart - "
+            + self._deviceId
+            + " - Power"
+        )
+
+    @property
+    def device_info(self):
+        """Return device specific attributes."""
+        model = self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId")
+        identifier = "WiserSmart - {}".format(self._deviceId)
+        return {
+            "identifiers": {(DOMAIN, identifier)},
+            "manufacturer": MANUFACTURER,
+            "model": model,
+        }
 
 class WiserSmartDeviceSensor(WiserSmartSensor):
     """Definition of Wiser Smart Device Sensor"""
