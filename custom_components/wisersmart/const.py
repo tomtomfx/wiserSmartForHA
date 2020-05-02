@@ -5,7 +5,7 @@ _LOGGER = logging.getLogger(__name__)
 DOMAIN = "wisersmart"
 DATA_WISER_SMART_CONFIG = "wiserSmart_config"
 VERSION = "0.9.1"
-WISER_SMART_PLATFORMS = ["climate", "sensor", "switch"]
+WISER_SMART_PLATFORMS = ["climate", "sensor", "switch", "input_select"]
 
 # Battery Constants
 
@@ -29,6 +29,8 @@ DEVICE_STATUS_ICONS = {
     "ONLINE": "mdi:remote",
     "OFFLINE": "mdi:remote-off",
 }
+
+WISER_SMART_HOME_MODES = ["manual", "schedule", "energysaver", "holiday"]
 
 WISER_SMART_HOME_MODE_ICONS = {
     "manual": "mdi:gesture-tap",
