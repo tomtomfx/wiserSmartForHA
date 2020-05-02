@@ -36,14 +36,20 @@ from .const import (
     WISER_SMART_HOME_MODES,
 )
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup(hass, config):
     """Set up Wiser Smart mode select device (Always only one)"""
+    component = EntityComponent(_LOGGER, DOMAIN, hass)
     data = hass.data[DOMAIN]
+    
+    wisersmart_mode_select = [WiserSmartModeSelect(hass, data)]
 
-    wisersmart_mode_select = [
-        WiserSmartModeSelect(hass, data)
-    ]
-    async_add_entities(wisersmart_mode_select, True)
+    component.async_register_entity_service(
+        SERVICE_SELECT_OPTION, SERVICE_SELECT_OPTION_SCHEMA,
+        'async_select_option'
+    )
+
+    await component.async_add_entities(wisersmart_mode_select)
+    return True
 
 """ Definition of Wiser Smart mode select"""
 class WiserSmartModeSelect(InputSelect):
@@ -102,7 +108,6 @@ class WiserSmartModeSelect(InputSelect):
         """Return unique id for the entity."""
         return "{}-0".format(self.name)
     
-    @callback
     def async_select_option(self, option):
         """Select new option."""
         if option not in self._options:

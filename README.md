@@ -85,6 +85,15 @@ This component is using the config flow to avoid having to populate the configur
 
 # Change log
 
+- 0.9.2
+    * Add power consumption entity for plugs and water heater devices
+    * Add input select to define "Home mode"
+
+- 0.9.1
+    * Update readme
+    * Fix batterry value (factor 10 was missing)
+    * Add power consumption to sensor for plugs
+
 - 0.9.0
     * First release
     * Retrieving all the Wiser Smart information
