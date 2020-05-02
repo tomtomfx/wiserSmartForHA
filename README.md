@@ -85,9 +85,8 @@ This component is using the config flow to avoid having to populate the configur
 
 # Change log
 
-- 0.9.2
+- 0.9.2 (not yet available)
     * Add power consumption entity for plugs and water heater devices
-    * Add input select to define "Home mode"
 
 - 0.9.1
     * Update readme
