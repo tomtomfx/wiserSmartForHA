@@ -15,6 +15,8 @@ from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 
+import homeassistant.components.input_select as input_select
+
 from .const import _LOGGER, DOMAIN, MANUFACTURER, WISER_SMART_SERVICES
 
 ATTR_APPLIANCE_STATE = "appliance_state"
