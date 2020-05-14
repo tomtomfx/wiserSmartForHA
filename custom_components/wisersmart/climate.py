@@ -10,6 +10,7 @@ import logging
 
 import voluptuous as vol
 
+from functools import partial
 from homeassistant.components.climate import ClimateDevice
 from homeassistant.core import callback
 
@@ -166,7 +167,10 @@ class WiserSmartRoom(ClimateDevice):
         _LOGGER.debug(
             "Setting temperature for {} to {}".format(self.name, target_temperature)
         )
-        self.data.wiserSmart.setWiserRoomTemp(self.room_id, target_temperature)
+        
+        await self.hass.async_add_executor_job(
+            partial(self.data.wiserSmart.setWiserRoomTemp, self.room_id, target_temperature)
+        )
         self._force_update = True
         await self.async_update_ha_state(True)
 

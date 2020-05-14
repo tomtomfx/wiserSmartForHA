@@ -11,6 +11,7 @@ import json
 
 # import time
 from datetime import datetime, timedelta
+from functools import partial
 import voluptuous as vol
 from wiserSmartAPI.wiserSmart import (
     wiserSmart,
@@ -48,6 +49,14 @@ from .const import (
     WISER_SMART_SERVICES,
 )
 
+HOME_MODE = "mode"
+COME_BACK_TIME = "come_back_time"
+SET_HOME_MODE_SCHEMA = vol.Schema(
+    {
+        vol.Required(HOME_MODE): vol.Coerce(str),
+        vol.Required(COME_BACK_TIME, default=0): vol.Coerce(int),
+    }
+)
 
 # Set config values to default
 # These get set to config later
@@ -63,7 +72,6 @@ PLATFORM_SCHEMA = vol.Schema(
         ),
     }
 )
-
 
 async def async_setup(hass, config):
     """
@@ -116,6 +124,8 @@ async def async_setup_entry(hass, config_entry):
         config_entry.data[CONF_PASSWORD],
     )
 
+    await data.async_connect()
+
     @callback
     def retryWiserSmartControllerSetup():
         hass.async_create_task(wiserSmartControllerSetup())
@@ -123,29 +133,34 @@ async def async_setup_entry(hass, config_entry):
     async def wiserSmartControllerSetup():
         _LOGGER.info("Initiating wiserSmart Controller connection")
         try:
-            if await data.async_update():
-                if data.wiserSmart.getWiserDevices is None:
-                    _LOGGER.error("No Wiser devices found to set up")
-                    return False
+            if await data.async_connect():
+                if await data.async_update():
+                    if data.wiserSmart.getWiserDevices is None:
+                        _LOGGER.error("No Wiser devices found to set up")
+                        return False
 
-                hass.data[DOMAIN] = data
+                    hass.data[DOMAIN] = data
 
-                for platform in WISER_SMART_PLATFORMS:
-                    hass.async_create_task(
-                        hass.config_entries.async_forward_entry_setup(
-                            config_entry, platform
+                    for platform in WISER_SMART_PLATFORMS:
+                        hass.async_create_task(
+                            hass.config_entries.async_forward_entry_setup(
+                                config_entry, platform
+                            )
                         )
-                    )
 
-                _LOGGER.info("Wiser Smart Component Setup Completed")
-                return True
-            else:
-                await scheduleWiserSmartSetup()
-                return True
+                    _LOGGER.info("Wiser Smart Component Setup Completed")
+                    await data.async_update_device_registry()
+                    return True
+                else:
+                    await scheduleWiserSmartSetup()
+                    return True
         except (asyncio.TimeoutError):
             await scheduleWiserSmartSetup()
             return True
         except WiserControllerTimeoutException:
+            await scheduleWiserSmartSetup()
+            return True
+        except Exception:
             await scheduleWiserSmartSetup()
             return True
 
@@ -158,8 +173,16 @@ async def async_setup_entry(hass, config_entry):
         hass.loop.call_later(interval, retryWiserSmartControllerSetup)
         return
 
-    hass.async_create_task(wiserSmartControllerSetup())
-    await data.async_update_device_registry()
+    await wiserSmartControllerSetup()
+
+    """ Register Service """
+    hass.services.async_register(
+        DOMAIN,
+        WISER_SERVICES["SERVICE_SET_HOME_MODE"],
+        set_home_mode,
+        schema=SET_HOME_MODE_SCHEMA,
+    )
+
     return True
 
 
@@ -204,10 +227,16 @@ class WiserSmartControllerHandle:
         self.ip = ip
         self.user = user
         self.password = password
-        self.wiserSmart = wiserSmart(ip, user, password)
+        self.wiserSmart = None
         self.minimum_temp = TEMP_MINIMUM
         self.maximum_temp = TEMP_MAXIMUM
         self.timer_handle = None
+
+    async def async_connect(self):
+        self.wiserSmart = await self._hass.async_add_executor_job(
+            partial(wiserSmart, self.ip, self.user, self.password)
+        )
+        return True
 
     @callback
     def do_controller_update(self):
@@ -217,14 +246,14 @@ class WiserSmartControllerHandle:
         # Update uses event loop scheduler for scan interval
         if no_throttle:
             # Forced update
-            _LOGGER.info("**Update of Wiser Smart data requested via On Demand**")
+            _LOGGER.info("Update of Wiser Smart data requested via On Demand")
             # Cancel next scheduled update and schedule for next interval
             if self.timer_handle:
                 self.timer_handle.cancel()
         else:
             # Updated on schedule
             _LOGGER.info(
-                "**Update of Wiser Smart data requested on {} seconds interval**".format(
+                "Update of Wiser Smart data requested on {} seconds interval".format(
                     SCAN_INTERVAL
                 )
             )
@@ -237,12 +266,12 @@ class WiserSmartControllerHandle:
             # Update from Wiser Controller
             result = await self._hass.async_add_executor_job(self.wiserSmart.refreshData)
             if result is not None:
-                _LOGGER.info("**Wiser Smart data updated**")
+                _LOGGER.info("Wiser Smart data updated")
                 # Send update notice to all components to update
                 dispatcher_send(self._hass, "WiserSmartUpdateMessage")
                 return True
             else:
-                _LOGGER.error("**Unable to update from Wiser Controller**")
+                _LOGGER.error("Unable to update from Wiser Controller")
                 return False
         except json.decoder.JSONDecodeError as JSONex:
             _LOGGER.error(
@@ -252,13 +281,13 @@ class WiserSmartControllerHandle:
             return False
         except WiserControllerTimeoutException as ex:
             _LOGGER.error(
-                "***Failed to get update from Wiser Smart due to timeout error***"
+                "Failed to get update from Wiser Smart due to timeout error"
             )
             _LOGGER.debug("Error is {}".format(ex))
             return False
         except Exception as ex:
             _LOGGER.error(
-                "***Failed to get update from Wiser Smart due to unknown error***"
+                "Failed to get update from Wiser Smart due to unknown error"
             )
             _LOGGER.debug("Error is {}".format(ex))
             return False
@@ -278,15 +307,17 @@ class WiserSmartControllerHandle:
             model="Wiser Smart Controller",
         )
 
-    async def set_home_mode(self, mode, comeBackTime):
+    async def set_home_mode(self, mode, come_back_time):
         hcMode = "manual" if mode in ["manual"] else "schedule"
         if self.wiserSmart is None:
-            self.wiserSmart = wiserSmart(self.ip, self.user, self.password)
+            self.wiserSmart = await self.async_connect()
         _LOGGER.debug(
             "Setting home mode to {}.".format(mode)
         )
         try:
-            self.wiserhub.setWiserHomeMode(self, hcMode, mode, comeBackTime)
+            await self._hass.async_add_executor_job(
+                partial(self.wiserSmart.setWiserHomeMode, hcMode, mode, come_back_time)
+            )
             await self.async_update(no_throttle=True)
         except BaseException as e:
             _LOGGER.debug("Error setting home mode! {}".format(str(e)))
@@ -299,13 +330,13 @@ class WiserSmartControllerHandle:
         :return:
         """
         if self.wiserSmart is None:
-            self.wiserSmart = wiserSmart(self.ip, self.user, self.password)
+            self.wiserSmart = await self.async_connect()
         _LOGGER.info("Setting appliance {} to {} ".format(applianceName, state))
 
         try:
-            self.wiserSmart.setWiserApplianceState(applianceName, state)
-            # Add small delay to allow hub to update status before refreshing
-            await asyncio.sleep(0.5)
+            await self._hass.async_add_executor_job(
+                partial(self.wiserSmart.setWiserApplianceState, applianceName, state)
+            )
             await self.async_update(no_throttle=True)
 
         except BaseException as e:

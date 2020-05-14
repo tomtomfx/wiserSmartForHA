@@ -11,3 +11,16 @@ set_appliance_state:
         description: "Enter the state, can be True or False.",
         example: True,
       }
+set_home_mode:
+  description: "Sets the Wiser Smart home mode"
+  fields:
+    mode:
+      {
+        description: "Enter the target mode for the system (manual, schedule, energysaver, holiday)",
+        example: "manual",
+      }
+    come_back_time:
+      {
+        description: "If mode is holiday provide the date for return as a timestamp, else 0",
+        example: 123456,
+      }

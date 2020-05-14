@@ -41,4 +41,5 @@ WISER_SMART_HOME_MODE_ICONS = {
 
 WISER_SMART_SERVICES = {
     "SERVICE_SET_APPLIANCE_STATE": "set_appliance_state",
+    "SERVICE_SET_HOME_MODE": "set_home_mode",
 }
