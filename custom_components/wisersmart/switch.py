@@ -20,12 +20,19 @@ import homeassistant.components.input_select as input_select
 from .const import _LOGGER, DOMAIN, MANUFACTURER, WISER_SMART_SERVICES
 
 ATTR_APPLIANCE_STATE = "appliance_state"
-
-
 SET_APPLIANCE_MODE_SCHEMA = vol.Schema(
     {
         vol.Required(ATTR_ENTITY_ID): cv.entity_id,
         vol.Required(ATTR_APPLIANCE_STATE, default=False): vol.Coerce(str),
+    }
+)
+
+ATTR_HOME_MODE = "mode"
+ATTR_COME_BACK_TIME = "come_back_time"
+SET_HOME_MODE_SCHEMA = vol.Schema(
+    {
+        vol.Required(HOME_MODE): vol.Coerce(str),
+        vol.Required(COME_BACK_TIME, default=0): vol.Coerce(int),
     }
 )
 
@@ -54,12 +61,25 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             appliance.schedule_update_ha_state(True)
             break
 
+    @callback
+    def set_home_mode(service):
+        home_mode = service.data[ATTR_HOME_MODE]
+        come_back_time = service.data[ATTR_COME_BACK_TIME]
+        hass.async_create_task(data.set_home_mode(home_mode, come_back_time))
+
     """ Register Services """
     hass.services.async_register(
         DOMAIN,
         WISER_SMART_SERVICES["SERVICE_SET_APPLIANCE_STATE"],
         set_appliance_state,
         schema=SET_APPLIANCE_MODE_SCHEMA,
+    )
+    """ Register Service """
+    hass.services.async_register(
+        DOMAIN,
+        WISER_SMART_SERVICES["SERVICE_SET_HOME_MODE"],
+        set_home_mode,
+        schema=SET_HOME_MODE_SCHEMA,
     )
     return True
 

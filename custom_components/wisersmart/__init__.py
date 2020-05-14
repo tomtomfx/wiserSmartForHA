@@ -49,15 +49,6 @@ from .const import (
     WISER_SMART_SERVICES,
 )
 
-HOME_MODE = "mode"
-COME_BACK_TIME = "come_back_time"
-SET_HOME_MODE_SCHEMA = vol.Schema(
-    {
-        vol.Required(HOME_MODE): vol.Coerce(str),
-        vol.Required(COME_BACK_TIME, default=0): vol.Coerce(int),
-    }
-)
-
 # Set config values to default
 # These get set to config later
 SCAN_INTERVAL = DEFAULT_SCAN_INTERVAL
@@ -174,15 +165,6 @@ async def async_setup_entry(hass, config_entry):
         return
 
     await wiserSmartControllerSetup()
-
-    """ Register Service """
-    hass.services.async_register(
-        DOMAIN,
-        WISER_SERVICES["SERVICE_SET_HOME_MODE"],
-        set_home_mode,
-        schema=SET_HOME_MODE_SCHEMA,
-    )
-
     return True
 
 
