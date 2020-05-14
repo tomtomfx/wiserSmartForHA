@@ -31,8 +31,8 @@ ATTR_HOME_MODE = "mode"
 ATTR_COME_BACK_TIME = "come_back_time"
 SET_HOME_MODE_SCHEMA = vol.Schema(
     {
-        vol.Required(HOME_MODE): vol.Coerce(str),
-        vol.Required(COME_BACK_TIME, default=0): vol.Coerce(int),
+        vol.Required(ATTR_HOME_MODE): vol.Coerce(str),
+        vol.Required(ATTR_COME_BACK_TIME, default=0): vol.Coerce(int),
     }
 )
 
