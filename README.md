@@ -23,6 +23,7 @@ It contains:
 
     - Monitor the current mode
     - Monitor the correct cloud connection
+    - Set the global working mode
 
 - **Wiser Smart Rooms**
 
@@ -42,11 +43,10 @@ It contains:
 
 ![](https://github.com/tomtomfx/wiserSmartForHA/blob/master/docs/ha_display.png)
 
-## To do
+## Restrictions
 
-- Set the current Wiser Smart mode (manual, schedule, holiday, energysaver)
-- Work only with the electrical heaters and not the TRVs as I do not have them in my system
-- Get and set schedule for all or one room
+- Works only with the electrical heaters and not the TRVs as I do not have them in my system
+- Get and set schedule for all or one room not available yet
 
 # Integration installation & setup
 
@@ -81,12 +81,61 @@ This component is using the config flow to avoid having to populate the configur
 
 ```Scan Interval``` is the duration between two calls towards the Controller (A value too small may overlaod the controller)
 
+## Mode select and automations
+
+To set the working mode (manual, schedule, holiday, energysaver) add:
+
+- An input_select to select the mode you want WiserSmart to be in
+
+```
+input_select:
+  wisersmart_mode_select:
+    name: WiserSmart mode
+    options:
+      - manual
+      - schedule
+      - energysaver
+      - holiday
+    initial: schedule
+    icon: mdi:target
+```
+- Automations to ensure that the input_select is in the current mode by default and if changed sets WiserSmart in the selected mode
+
+```
+# Home mode input.select default value
+- id: '1'
+  alias: Set home mode to input select
+  trigger:
+  - platform: state
+    entity_id: sensor.wiser_operation_mode
+  action:
+   - service: input_select.select_option
+     data_template:
+       entity_id: input_select.wisersmart_mode_select
+       option: "{{ states('sensor.wiser_operation_mode') }}"
+
+# Set home mode using the input select
+- id: '2'
+  alias: Set home mode from input select
+  trigger:
+  - platform: state
+    entity_id: input_select.wisersmart_mode_select
+  action:
+   - service: wisersmart.set_home_mode
+     data_template:
+       mode: "{{ states('input_select.wisersmart_mode_select') }}"
+       come_back_time: "{{ state_attr('input_datetime.back_from_vacation', 'timestamp') | int }}"
+
+```
+
 ## Please play with this integration and provide feedback, bugs and enhancements 
 
 # Change log
 
-- 0.9.2 (not yet available)
+- 0.9.2
     * Add power consumption entity for plugs and water heater devices
+    * Add service to set Wiser Smart mode
+    * Fix I/O in event loop
 
 - 0.9.1
     * Update readme

@@ -4,7 +4,7 @@ _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = "wisersmart"
 DATA_WISER_SMART_CONFIG = "wiserSmart_config"
-VERSION = "0.9.1"
+VERSION = "0.9.2"
 WISER_SMART_PLATFORMS = ["climate", "sensor", "switch"]
 
 # Battery Constants
