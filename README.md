@@ -132,6 +132,10 @@ input_select:
 
 # Change log
 
+- 0.9.3
+    * ClimateDevice to ClimateEntity
+    * SwitchDevice to SwitchEntity
+    
 - 0.9.2
     * Add power consumption entity for plugs and water heater devices
     * Add service to set Wiser Smart mode
