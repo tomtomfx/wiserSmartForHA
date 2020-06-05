@@ -11,7 +11,7 @@ import logging
 import voluptuous as vol
 
 from functools import partial
-from homeassistant.components.climate import ClimateDevice
+from homeassistant.components.climate import ClimateEntity
 from homeassistant.core import callback
 
 from homeassistant.components.climate.const import (
@@ -50,7 +50,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 """ Definition of WiserSmartRoom """
-class WiserSmartRoom(ClimateDevice):
+class WiserSmartRoom(ClimateEntity):
     def __init__(self, hass, data, room_id):
         """Initialize the sensor."""
         self.data = data

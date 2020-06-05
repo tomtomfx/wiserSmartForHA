@@ -10,7 +10,7 @@ import asyncio
 import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.switch import SwitchDevice
+from homeassistant.components.switch import SwitchEntity
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
@@ -83,7 +83,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     )
     return True
 
-class WiserSmartAppliance(SwitchDevice):
+class WiserSmartAppliance(SwitchEntity):
     def __init__(self, data, applianceId, name):
         """Initialize the sensor."""
         _LOGGER.info("{} Appliance Init".format(name))
