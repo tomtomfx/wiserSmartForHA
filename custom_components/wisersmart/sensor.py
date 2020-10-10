@@ -257,7 +257,7 @@ class WiserSmartDeviceSensor(WiserSmartSensor):
         identifier = "WiserSmart - {}".format(self._deviceId)
 
         # Thermostats and heaters
-        if (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") in ["EH-ZB-RTS", "EH-ZB-HACT"]):
+        if (self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("modelId") in ["EH-ZB-RTS", "EH-ZB-HACT", "EH-ZB-VACT"]):
             identifier = "WiserSmartRoom - {}".format(self.data.wiserSmart.getWiserDeviceInfo(self._deviceId).get("location"))
             model = "Wiser Smart Room"
 

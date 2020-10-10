@@ -155,6 +155,25 @@ class WiserSmartRoom(ClimateEntity):
     def target_temperature(self):
         return self.data.wiserSmart.getWiserRoomInfo(self.room_id).get("targetValue")        
 
+    @property
+    def state_attributes(self):
+        """Return state attributes."""
+        # Generic attributes
+        attrs = super().state_attributes
+
+        # If VACT return valves infos
+        i = 1
+        valves = self.data.wiserSmart.getWiserRoomInfo(self.room_id).get("valve")
+        if (valves == None):
+            return attrs
+
+        for valve in valves:
+            attrs["valvePosition_" + i] = valve.get("valvePosition")
+            attrs["calibrationStatus_" + i] = valve.get("calibrationStatus")
+            attrs["internalTemp_" + i] = valve.get("internalTemp")
+
+        return attrs
+
     async def async_set_temperature(self, **kwargs):
         """Set new target temperatures."""
         target_temperature = kwargs.get(ATTR_TEMPERATURE)
