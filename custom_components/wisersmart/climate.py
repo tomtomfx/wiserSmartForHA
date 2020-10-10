@@ -171,6 +171,7 @@ class WiserSmartRoom(ClimateEntity):
             attrs["valvePosition_" + i] = valve.get("valvePosition")
             attrs["calibrationStatus_" + i] = valve.get("calibrationStatus")
             attrs["internalTemp_" + i] = valve.get("internalTemp")
+            i = i + 1
 
         return attrs
 
