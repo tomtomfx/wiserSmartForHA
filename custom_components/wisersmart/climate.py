@@ -72,6 +72,8 @@ class WiserSmartRoom(ClimateEntity):
         room = self.data.wiserSmart.getWiserRoomInfo(self.room_id)
         self.current_temp = room.get("currentValue")
         self.target_temp = room.get("targetValue")
+        if self.target_temp is None:
+            self.target_temp = -1
 
     @property
     def supported_features(self):
@@ -87,6 +89,9 @@ class WiserSmartRoom(ClimateEntity):
         room = self.data.wiserSmart.getWiserRoomInfo(self.room_id)
         self.current_temp = room.get("currentValue")
         self.target_temp = room.get("targetValue")
+
+        if self.target_temp is None:
+            self.target_temp = -1
 
         if self.current_temp < self.target_temp:
             state = HVAC_MODE_HEAT
@@ -121,6 +126,9 @@ class WiserSmartRoom(ClimateEntity):
         room = self.data.wiserSmart.getWiserRoomInfo(self.room_id)
         self.current_temp = room.get("currentValue")
         self.target_temp = room.get("targetValue")
+
+        if self.target_temp is None:
+            self.target_temp = -1
 
         if self.current_temp < self.target_temp:
             return "mdi:radiator"
