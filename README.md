@@ -132,6 +132,9 @@ input_select:
 
 # Change log
 
+- 0.9.4
+    * Add valve support
+    
 - 0.9.3
     * ClimateDevice to ClimateEntity
     * SwitchDevice to SwitchEntity
