@@ -48,7 +48,7 @@ class WiserSmartFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return WiserSmartOptionsFlowHandler(config_entry)
 
     async def _test_connection(self, ip, user, password):
-        self.wiserSmart = await self._hass.async_add_executor_job(
+        self.wiserSmart = await self.hass.async_add_executor_job(
             partial(wiserSmart, ip, user, password)
         )
         try:
