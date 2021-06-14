@@ -1,5 +1,5 @@
 import voluptuous as vol
-
+from functools import partial
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_NAME, CONF_USERNAME, CONF_PASSWORD, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistantError, callback
@@ -48,7 +48,9 @@ class WiserSmartFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return WiserSmartOptionsFlowHandler(config_entry)
 
     async def _test_connection(self, ip, user, password):
-        self.wiserSmart = wiserSmart(ip, user, password)
+        self.wiserSmart = await self._hass.async_add_executor_job(
+            partial(wiserSmart, ip, user, password)
+        )
         try:
             return await self.hass.async_add_executor_job(self.wiserSmart.getWiserControllerName)
         except:
