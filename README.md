@@ -131,6 +131,9 @@ input_select:
 ## Please play with this integration and provide feedback, bugs and enhancements 
 
 # Change log
+- 0.9.6
+    * Fix I/O loop in config flow
+    
 - 0.9.5
     * Add version in manifest.json
     

@@ -1,7 +1,7 @@
 {
   "domain": "wisersmart",
   "name": "Wiser Smart Component for Home Assistant",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "config_flow": true,
   "documentation": "https://github.com/tomtomfx/wiserSmartForHA/blob/master/Readme.Md",
   "dependencies": [],
