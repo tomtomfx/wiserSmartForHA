@@ -11,6 +11,8 @@ import logging
 import voluptuous as vol
 
 from functools import partial
+from ruamel.yaml import YAML as yaml
+
 from homeassistant.components.climate import ClimateEntity
 from homeassistant.core import callback
 
@@ -27,7 +29,6 @@ from homeassistant.const import (
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import Entity
-from homeassistant.util import ruamel_yaml as yaml
 
 from .const import (
     _LOGGER,
